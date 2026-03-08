@@ -9,7 +9,6 @@
     "backend",
     "express",
     "docker",
-    "docker-compose",
     "jest",
     "eslint",
     "prettier"
@@ -26,7 +25,7 @@
     "prepare": "node .husky/install.mjs",
     "prepare:gui": "sh .husky/setup-gui.sh",
     "dev": "tsx watch src/index.ts",
-    "dev:docker": "docker compose up app-dev",
+    "dev:docker": "docker compose up app-dev --watch",
     "build": "tsc",
     "start": "node dist/index.js",
     "eslint": "eslint .",

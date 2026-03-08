@@ -62,10 +62,13 @@ The application restarts automatically when you save files.
 
 ```bash
 pnpm run dev:docker
-# or: docker compose up app-dev
+# or: docker compose up app-dev --watch
 ```
 
-Source code is mounted as a volume, so changes are reflected immediately via hot reload.
+- Source code is bind-mounted, so changes are reflected immediately via hot reload.
+- When you add packages (`pnpm add <package>`), the container detects the change and restarts automatically, running `pnpm install` on startup.
+
+Requires Docker Compose 2.32.0+ for automatic restart on dependency changes.
 
 ## Production
 
