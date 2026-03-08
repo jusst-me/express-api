@@ -1,13 +1,36 @@
+import cors from 'cors';
 import express from 'express';
+import rateLimit from 'express-rate-limit';
+import helmet from 'helmet';
 
 import { setupSwagger } from './api/docs/swagger';
 import apiRoutes from './api/routes/index';
+import { config } from './config/index';
 import { errorHandler } from './utils/errorHandler';
 import { NotFoundError } from './utils/errors';
 
 const app = express();
 
-app.use(express.json());
+app.use(
+  helmet({
+    contentSecurityPolicy: {
+      directives: {
+        defaultSrc: ["'self'"],
+        styleSrc: ["'self'", "'unsafe-inline'"],
+        scriptSrc: ["'self'", "'unsafe-inline'"],
+        imgSrc: ["'self'", 'data:', 'validator.swagger.io'],
+      },
+    },
+  })
+);
+app.use(cors({ origin: config.corsOrigin }));
+app.use(
+  rateLimit({
+    windowMs: 15 * 60 * 1000,
+    max: config.rateLimitMax,
+  })
+);
+app.use(express.json({ limit: '100kb' }));
 
 app.get('/', (_req, res) => {
   res.json({ message: 'Express API' });
