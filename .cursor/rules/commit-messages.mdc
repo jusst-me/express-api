@@ -1,0 +1,21 @@
+---
+description: Use Conventional Commits when generating commit messages
+alwaysApply: true
+---
+
+# Commit message format
+
+When generating commit messages (including via the Source Control sparkle button), always use [Conventional Commits](https://www.conventionalcommits.org/):
+
+```
+<type>(<scope>): <description>
+```
+
+- **Types**: feat, fix, docs, chore, refactor, test, style
+- **Scope**: optional (e.g. deps, api, auth)
+- **Description**: imperative mood, max ~50 chars ("add" not "added")
+
+Examples:
+- `chore(deps): upgrade eslint and prettier`
+- `feat: add user authentication`
+- `fix(api): handle empty response`
