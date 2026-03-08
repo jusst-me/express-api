@@ -27,6 +27,7 @@ FROM node:24-alpine
 WORKDIR /app
 COPY --from=builder /app/dist ./dist
 COPY --from=builder /app/src/data ./src/data
+COPY --from=builder /app/src/api/docs ./src/api/docs
 COPY --from=builder /app/package.json /app/pnpm-lock.yaml /app/pnpm-workspace.yaml ./
 RUN corepack enable pnpm && pnpm install --prod --frozen-lockfile --ignore-scripts
 CMD ["node", "dist/index.js"]
