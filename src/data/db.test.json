@@ -1,0 +1,30 @@
+{
+  "users": [
+    { "id": "1", "name": "Alice Johnson", "email": "alice@example.com" },
+    { "id": "2", "name": "Bob Smith", "email": "bob@example.com" },
+    { "id": "3", "name": "Carol Williams", "email": "carol@example.com" }
+  ],
+  "posts": [
+    {
+      "id": "1",
+      "title": "Getting Started with Web Development",
+      "body": "Web development is an exciting journey. Let's explore the basics of HTML, CSS, and JavaScript.",
+      "userId": "1",
+      "createdAt": "2025-01-15T10:00:00Z"
+    },
+    {
+      "id": "2",
+      "title": "Understanding REST APIs",
+      "body": "REST APIs are the backbone of modern web applications. Learn how to design and consume them effectively.",
+      "userId": "1",
+      "createdAt": "2025-01-16T14:30:00Z"
+    },
+    {
+      "id": "3",
+      "title": "Node.js Best Practices",
+      "body": "Node.js offers powerful features for building scalable applications. Here are some best practices to follow.",
+      "userId": "2",
+      "createdAt": "2025-01-17T09:15:00Z"
+    }
+  ]
+}
