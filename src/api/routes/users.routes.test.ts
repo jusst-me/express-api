@@ -1,6 +1,7 @@
 import request from 'supertest';
 
 import app from '../../app';
+import { NON_EXISTENT_ID, SEED_IDS } from '../../test/constants';
 
 describe('USERS /users', () => {
   describe('GET /users', () => {
@@ -17,17 +18,17 @@ describe('USERS /users', () => {
 
   describe('GET /users/:id', () => {
     it('returns a user by id', async () => {
-      const res = await request(app).get('/users/1');
+      const res = await request(app).get(`/users/${SEED_IDS.userAlice}`);
       expect(res.status).toBe(200);
       expect(res.body).toMatchObject({
-        id: '1',
+        id: SEED_IDS.userAlice,
         name: 'Alice Johnson',
         email: 'alice@example.com',
       });
     });
 
     it('returns 404 for non-existent user', async () => {
-      const res = await request(app).get('/users/999');
+      const res = await request(app).get(`/users/${NON_EXISTENT_ID}`);
       expect(res.status).toBe(404);
       expect(res.body).toHaveProperty('error');
     });
@@ -35,14 +36,14 @@ describe('USERS /users', () => {
 
   describe('GET /users/:id/posts', () => {
     it('returns posts for a user', async () => {
-      const res = await request(app).get('/users/1/posts');
+      const res = await request(app).get(`/users/${SEED_IDS.userAlice}/posts`);
       expect(res.status).toBe(200);
       expect(Array.isArray(res.body)).toBe(true);
-      expect(res.body.every((p: { userId: string }) => p.userId === '1')).toBe(true);
+      expect(res.body.every((p: { userId: string }) => p.userId === SEED_IDS.userAlice)).toBe(true);
     });
 
     it('returns 404 for non-existent user', async () => {
-      const res = await request(app).get('/users/999/posts');
+      const res = await request(app).get(`/users/${NON_EXISTENT_ID}/posts`);
       expect(res.status).toBe(404);
     });
   });
@@ -70,8 +71,8 @@ describe('USERS /users', () => {
 
   describe('PUT /users/:id', () => {
     it('updates a user', async () => {
-      const res = await request(app).put('/users/3').send({
-        id: '3',
+      const res = await request(app).put(`/users/${SEED_IDS.userCarol}`).send({
+        id: SEED_IDS.userCarol,
         name: 'Carol Updated',
         email: 'carol.updated@example.com',
       });
@@ -80,8 +81,8 @@ describe('USERS /users', () => {
     });
 
     it('returns 404 for non-existent user', async () => {
-      const res = await request(app).put('/users/999').send({
-        id: '999',
+      const res = await request(app).put(`/users/${NON_EXISTENT_ID}`).send({
+        id: NON_EXISTENT_ID,
         name: 'Name',
         email: 'email@example.com',
       });
@@ -105,13 +106,13 @@ describe('USERS /users', () => {
     });
 
     it('returns 400 when user has posts', async () => {
-      const res = await request(app).delete('/users/1');
+      const res = await request(app).delete(`/users/${SEED_IDS.userAlice}`);
       expect(res.status).toBe(400);
       expect(res.body).toHaveProperty('error');
     });
 
     it('returns 404 for non-existent user', async () => {
-      const res = await request(app).delete('/users/999');
+      const res = await request(app).delete(`/users/${NON_EXISTENT_ID}`);
       expect(res.status).toBe(404);
     });
   });

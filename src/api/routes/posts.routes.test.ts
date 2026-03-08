@@ -1,6 +1,7 @@
 import request from 'supertest';
 
 import app from '../../app';
+import { NON_EXISTENT_ID, SEED_IDS } from '../../test/constants';
 
 describe('POSTS /posts', () => {
   describe('GET /posts', () => {
@@ -19,17 +20,17 @@ describe('POSTS /posts', () => {
 
   describe('GET /posts/:id', () => {
     it('returns a post by id', async () => {
-      const res = await request(app).get('/posts/1');
+      const res = await request(app).get(`/posts/${SEED_IDS.post1}`);
       expect(res.status).toBe(200);
       expect(res.body).toMatchObject({
-        id: '1',
+        id: SEED_IDS.post1,
         title: 'Getting Started with Web Development',
-        userId: '1',
+        userId: SEED_IDS.userAlice,
       });
     });
 
     it('returns 404 for non-existent post', async () => {
-      const res = await request(app).get('/posts/999');
+      const res = await request(app).get(`/posts/${NON_EXISTENT_ID}`);
       expect(res.status).toBe(404);
       expect(res.body).toHaveProperty('error');
     });
@@ -40,13 +41,13 @@ describe('POSTS /posts', () => {
       const res = await request(app).post('/posts').send({
         title: 'Test Post',
         body: 'Test body content',
-        userId: '1',
+        userId: SEED_IDS.userAlice,
       });
       expect(res.status).toBe(201);
       expect(res.body).toMatchObject({
         title: 'Test Post',
         body: 'Test body content',
-        userId: '1',
+        userId: SEED_IDS.userAlice,
       });
       expect(res.body).toHaveProperty('id');
       expect(res.body).toHaveProperty('createdAt');
@@ -62,7 +63,7 @@ describe('POSTS /posts', () => {
       const res = await request(app).post('/posts').send({
         title: 'Test',
         body: 'Body',
-        userId: '999',
+        userId: NON_EXISTENT_ID,
       });
       expect(res.status).toBe(400);
     });
@@ -70,11 +71,11 @@ describe('POSTS /posts', () => {
 
   describe('PUT /posts/:id', () => {
     it('updates a post', async () => {
-      const res = await request(app).put('/posts/1').send({
-        id: '1',
+      const res = await request(app).put(`/posts/${SEED_IDS.post1}`).send({
+        id: SEED_IDS.post1,
         title: 'Updated Title',
         body: 'Updated body',
-        userId: '1',
+        userId: SEED_IDS.userAlice,
         createdAt: '2025-01-15T10:00:00Z',
       });
       expect(res.status).toBe(200);
@@ -82,11 +83,11 @@ describe('POSTS /posts', () => {
     });
 
     it('returns 404 for non-existent post', async () => {
-      const res = await request(app).put('/posts/999').send({
-        id: '999',
+      const res = await request(app).put(`/posts/${NON_EXISTENT_ID}`).send({
+        id: NON_EXISTENT_ID,
         title: 'Title',
         body: 'Body',
-        userId: '1',
+        userId: SEED_IDS.userAlice,
         createdAt: new Date().toISOString(),
       });
       expect(res.status).toBe(404);
@@ -98,7 +99,7 @@ describe('POSTS /posts', () => {
       const createRes = await request(app).post('/posts').send({
         title: 'To Delete',
         body: 'Body',
-        userId: '1',
+        userId: SEED_IDS.userAlice,
       });
       const id = createRes.body.id;
 
@@ -110,7 +111,7 @@ describe('POSTS /posts', () => {
     });
 
     it('returns 404 for non-existent post', async () => {
-      const res = await request(app).delete('/posts/999');
+      const res = await request(app).delete(`/posts/${NON_EXISTENT_ID}`);
       expect(res.status).toBe(404);
     });
   });
