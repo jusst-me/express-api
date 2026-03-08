@@ -4,8 +4,8 @@ info:
   description: REST API for posts and users
   version: 1.0.0
 servers:
-  - url: http://localhost:3000
-    description: Development server
+  - url: http://localhost:3000/api/v1
+    description: Default (overridden at runtime from config)
 paths:
   /posts:
     get:
@@ -71,7 +71,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Post'
+              $ref: '#/components/schemas/PostUpdate'
       responses:
         '200':
           description: Updated post
@@ -231,6 +231,19 @@ components:
       type: object
       required: [title, body, userId]
       properties:
+        title:
+          type: string
+        body:
+          type: string
+        userId:
+          type: string
+    PostUpdate:
+      type: object
+      required: [id, title, body, userId]
+      description: createdAt is server-managed and cannot be updated
+      properties:
+        id:
+          type: string
         title:
           type: string
         body:

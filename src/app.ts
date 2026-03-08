@@ -8,9 +8,11 @@ import apiRoutes from './api/routes/index';
 import { config } from './config/index';
 import { errorHandler } from './utils/errorHandler';
 import { NotFoundError } from './utils/errors';
+import { requestIdMiddleware } from './utils/requestId';
 
 const app = express();
 
+app.use(requestIdMiddleware);
 app.use(
   helmet({
     contentSecurityPolicy: {
@@ -38,7 +40,7 @@ app.get('/', (_req, res) => {
 
 setupSwagger(app, '/api-docs');
 
-app.use(apiRoutes);
+app.use('/api/v1', apiRoutes);
 
 app.use((_req, _res, next) => {
   next(new NotFoundError('Not Found'));

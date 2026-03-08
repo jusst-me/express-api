@@ -10,3 +10,6 @@ export const SEED_IDS = {
 
 /** Used in 404 tests – does not exist in db.json */
 export const NON_EXISTENT_ID = '999';
+
+/** API base path for route tests */
+export const API_BASE = '/api/v1';
