@@ -1,3 +1,5 @@
+import crypto from 'crypto';
+
 import type { Post } from '../types';
 import { NotFoundError, ValidationError } from '../utils/errors';
 import { readDb, writeDb } from './db.service';
@@ -22,7 +24,7 @@ export const create = (data: Omit<Post, 'id' | 'createdAt'>, dbPath?: string): P
   if (!userExists) {
     throw new ValidationError(`User with id ${data.userId} not found`);
   }
-  const id = String(Math.max(0, ...db.posts.map((p) => parseInt(p.id, 10))) + 1);
+  const id = crypto.randomUUID();
   const post: Post = {
     ...data,
     id,

@@ -1,3 +1,5 @@
+import crypto from 'crypto';
+
 import type { Post, User } from '../types';
 import { NotFoundError, ValidationError } from '../utils/errors';
 import { readDb, writeDb } from './db.service';
@@ -27,7 +29,7 @@ export const findPostsByUserId = (userId: string, dbPath?: string): Post[] => {
 
 export const create = (data: Omit<User, 'id'>, dbPath?: string): User => {
   const db = readDb(dbPath);
-  const id = String(Math.max(0, ...db.users.map((u) => parseInt(u.id, 10))) + 1);
+  const id = crypto.randomUUID();
   const user: User = { ...data, id };
   db.users.push(user);
   writeDb(db, dbPath);
