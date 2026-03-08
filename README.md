@@ -50,7 +50,7 @@ This creates `~/.config/husky/init.sh` so your Node/pnpm path is available in Gi
 
 ## API documentation
 
-Interactive API documentation is available at [http://localhost:3000/api-docs](http://localhost:3000/api-docs) when the server is running. The OpenAPI spec is defined in `src/api/docs/openapi.yaml`.
+Interactive API documentation is available at `http://localhost:<PORT>/api-docs` when the server is running (default port 3000, overridable via `PORT` in `.env`). The OpenAPI spec is defined in `src/api/docs/openapi.yaml`.
 
 ## Development
 

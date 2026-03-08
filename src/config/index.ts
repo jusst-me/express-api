@@ -1,4 +1,7 @@
-import 'dotenv/config';
+import dotenv from 'dotenv';
+
+dotenv.config();
+dotenv.config({ path: '.env.local', override: true });
 
 const parsePort = (): number => {
   const raw = process.env.PORT ?? '3000';
@@ -28,8 +31,21 @@ const parseRateLimitMax = (): number => {
   return max;
 };
 
+const parseApiServerUrl = (port: number): string => {
+  const base = process.env.API_BASE_URL;
+  if (base) {
+    return `${base.replace(/\/$/, '')}/api/v1`;
+  }
+  const host = process.env.HOST ?? 'localhost';
+  const protocol = process.env.NODE_ENV === 'production' ? 'https' : 'http';
+  return `${protocol}://${host}:${port}/api/v1`;
+};
+
+const port = parsePort();
+
 export const config = {
-  port: parsePort(),
+  port,
   corsOrigin: parseCorsOrigin(),
   rateLimitMax: parseRateLimitMax(),
+  apiServerUrl: parseApiServerUrl(port),
 };

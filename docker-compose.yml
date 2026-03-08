@@ -8,9 +8,10 @@ services:
       - .:/app
       - app-node-modules:/app/node_modules
     ports:
-      - '3000:3000'
+      - '${PORT:-3000}:${PORT:-3000}'
     environment:
       CI: 'true'
+      PORT: ${PORT:-3000}
     develop:
       watch:
         - action: restart
