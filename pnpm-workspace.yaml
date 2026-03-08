@@ -1,5 +1,8 @@
 packages:
-  - '.'
+  - .
 
 onlyBuiltDependencies:
   - esbuild
+
+ignoredBuiltDependencies:
+  - '@scarf/scarf'
