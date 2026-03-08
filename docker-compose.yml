@@ -1,0 +1,19 @@
+services:
+  app-dev:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: development
+    volumes:
+      - ./src:/app/src
+      - ./package.json:/app/package.json
+      - ./pnpm-lock.yaml:/app/pnpm-lock.yaml
+      - ./tsconfig.json:/app/tsconfig.json
+      - app-node-modules:/app/node_modules
+    ports:
+      - '3000:3000'
+    environment:
+      CI: 'true'
+
+volumes:
+  app-node-modules:

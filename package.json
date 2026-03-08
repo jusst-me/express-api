@@ -1,0 +1,63 @@
+{
+  "name": "express-api",
+  "version": "1.0.0",
+  "description": "A minimal Express.js API with TypeScript and Jest",
+  "keywords": [
+    "express",
+    "node",
+    "typescript",
+    "backend",
+    "express",
+    "docker",
+    "docker-compose",
+    "jest",
+    "eslint",
+    "prettier"
+  ],
+  "license": "ISC",
+  "author": "Justin van Dijk",
+  "type": "commonjs",
+  "main": "dist/index.js",
+  "engines": {
+    "node": ">=24.0.0"
+  },
+  "packageManager": "pnpm@10.14.0",
+  "scripts": {
+    "prepare": "node .husky/install.mjs",
+    "prepare:gui": "sh .husky/setup-gui.sh",
+    "dev": "tsx watch src/index.ts",
+    "dev:docker": "docker compose up app-dev",
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "eslint": "eslint .",
+    "prettier": "prettier --check .",
+    "format": "prettier --write .",
+    "lint": "pnpm run eslint && pnpm run prettier",
+    "test": "jest"
+  },
+  "dependencies": {
+    "dotenv": "^16.4.0"
+  },
+  "devDependencies": {
+    "@types/jest": "^29.5.14",
+    "eslint": "^10.0.3",
+    "eslint-config-jvd": "latest",
+    "husky": "^9.1.7",
+    "jest": "^29.7.0",
+    "lint-staged": "^15.5.2",
+    "prettier": "^3.8.1",
+    "ts-jest": "^29.2.0",
+    "tsx": "latest",
+    "typescript": "latest"
+  },
+  "prettier": "eslint-config-jvd/prettier",
+  "lint-staged": {
+    "*.{ts,tsx,js,jsx}": [
+      "eslint --fix",
+      "prettier --write"
+    ],
+    "*.{json,md,yml,yaml}": [
+      "prettier --write"
+    ]
+  }
+}
