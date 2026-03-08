@@ -1,5 +1,6 @@
 import crypto from 'crypto';
 
+import { ErrorMessages } from '../constants/errors';
 import type { Post, User } from '../types';
 import { NotFoundError, ValidationError } from '../utils/errors';
 import { readDb, writeDb } from './db.service';
@@ -55,7 +56,7 @@ export const remove = async (id: string, dbPath?: string): Promise<void> => {
   }
   const hasPosts = db.posts.some((p) => p.userId === id);
   if (hasPosts) {
-    throw new ValidationError('Cannot delete user with existing posts');
+    throw new ValidationError(ErrorMessages.CANNOT_DELETE_USER_WITH_POSTS);
   }
   db.users.splice(index, 1);
   await writeDb(db, dbPath);

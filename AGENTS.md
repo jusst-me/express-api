@@ -6,6 +6,7 @@ Context for AI coding agents working on this project.
 
 - `src/` – all source code
   - `config/` – configuration (env, app settings)
+  - `constants/` – shared constants (HTTP status, JSend status, errors, API paths, validation limits)
   - `services/` – business logic
   - `api/` – HTTP routes/controllers
   - `utils/` – helper functions
@@ -13,6 +14,17 @@ Context for AI coding agents working on this project.
 - Root – configuration only (tsconfig, eslint, prettier, etc.)
 
 ## Code conventions
+
+### Constants
+
+Avoid magic values. Use constants from `src/constants/`:
+
+- `HttpStatus` – HTTP status codes (OK, CREATED, BAD_REQUEST, NOT_FOUND, etc.)
+- `JSendStatus` – JSend response status (SUCCESS, FAIL, ERROR)
+- `ErrorMessages` – API error messages
+- `ApiPaths` – API path segments (BASE, DOCS)
+- `ValidationLimits` – field length limits (NAME_MAX, TITLE_MAX, EMAIL_MAX)
+- `DbFilenames`, `DB_DATA_DIR` – database paths
 
 ### API responses (JSend)
 

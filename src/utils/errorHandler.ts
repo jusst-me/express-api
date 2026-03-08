@@ -1,5 +1,7 @@
 import type { NextFunction, Request, Response } from 'express';
 
+import { ErrorMessages } from '../constants/errors';
+import { HttpStatus } from '../constants/http';
 import { NotFoundError, ValidationError } from './errors';
 import { error as jsendError, fail as jsendFail } from './jsend';
 
@@ -25,18 +27,21 @@ export const errorHandler = (
   _next: NextFunction
 ): void => {
   if (err instanceof NotFoundError) {
-    jsendFail(res, { error: err.message }, 404);
+    jsendFail(res, { error: err.message }, HttpStatus.NOT_FOUND);
     return;
   }
 
   if (err instanceof ValidationError) {
     const data: Record<string, unknown> = { error: err.message };
     if (err.details !== undefined) data.details = err.details;
-    jsendFail(res, data, 400);
+    jsendFail(res, data, HttpStatus.BAD_REQUEST);
     return;
   }
 
   logError(req, err);
   const data = req.requestId ? { requestId: req.requestId } : undefined;
-  jsendError(res, 'Internal server error', { code: 500, data });
+  jsendError(res, ErrorMessages.INTERNAL_SERVER_ERROR, {
+    code: HttpStatus.INTERNAL_SERVER_ERROR,
+    data,
+  });
 };

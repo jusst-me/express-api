@@ -6,6 +6,7 @@ Minimal Node.js TypeScript template for backend projects (Express, NestJS, etc.)
 
 - `src/` – source code
   - `config/` – configuration (env, app settings)
+  - `constants/` – shared constants (HTTP status, JSend status, errors, API paths)
   - `services/` – business logic
   - `api/` – HTTP routes/controllers
   - `utils/` – helper functions

@@ -1,5 +1,7 @@
 import dotenv from 'dotenv';
 
+import { ApiPaths } from '../constants/api';
+
 dotenv.config();
 dotenv.config({ path: '.env.local', override: true });
 
@@ -34,11 +36,11 @@ const parseRateLimitMax = (): number => {
 const parseApiServerUrl = (port: number): string => {
   const base = process.env.API_BASE_URL;
   if (base) {
-    return `${base.replace(/\/$/, '')}/api/v1`;
+    return `${base.replace(/\/$/, '')}${ApiPaths.BASE}`;
   }
   const host = process.env.HOST ?? 'localhost';
   const protocol = process.env.NODE_ENV === 'production' ? 'https' : 'http';
-  return `${protocol}://${host}:${port}/api/v1`;
+  return `${protocol}://${host}:${port}${ApiPaths.BASE}`;
 };
 
 const port = parsePort();

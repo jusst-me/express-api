@@ -1,5 +1,8 @@
 import type { NextFunction, Request, Response } from 'express';
 
+import { ErrorMessages } from '../../constants/errors';
+import { HttpStatus } from '../../constants/http';
+import { VALIDATION_PATH_BODY } from '../../constants/validation';
 import * as postsService from '../../services/posts.service';
 import { ValidationError } from '../../utils/errors';
 import { success } from '../../utils/jsend';
@@ -30,13 +33,13 @@ export const create = async (req: Request, res: Response, next: NextFunction): P
     if (!result.success) {
       const msg = result.error.errors.map((e) => e.message).join('; ');
       const details = result.error.errors.map((e) => ({
-        path: e.path.join('.') || 'body',
+        path: e.path.join('.') || VALIDATION_PATH_BODY,
         message: e.message,
       }));
       throw new ValidationError(`Invalid post: ${msg}`, details);
     }
     const post = await postsService.create(result.data);
-    success(res, post, 201);
+    success(res, post, HttpStatus.CREATED);
   } catch (err) {
     next(err);
   }
@@ -48,14 +51,14 @@ export const update = async (req: Request, res: Response, next: NextFunction): P
     if (!result.success) {
       const msg = result.error.errors.map((e) => e.message).join('; ');
       const details = result.error.errors.map((e) => ({
-        path: e.path.join('.') || 'body',
+        path: e.path.join('.') || VALIDATION_PATH_BODY,
         message: e.message,
       }));
       throw new ValidationError(`Invalid post: ${msg}`, details);
     }
     const id = req.params.id as string;
     if (result.data.id !== id) {
-      throw new ValidationError('Post id in body must match URL parameter');
+      throw new ValidationError(ErrorMessages.POST_ID_MISMATCH);
     }
     const post = await postsService.update(id, result.data);
     success(res, post);

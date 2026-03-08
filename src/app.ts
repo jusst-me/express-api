@@ -6,6 +6,8 @@ import helmet from 'helmet';
 import { setupSwagger } from './api/docs/swagger';
 import apiRoutes from './api/routes/index';
 import { config } from './config/index';
+import { ApiPaths, ROOT_MESSAGE } from './constants/api';
+import { ErrorMessages } from './constants/errors';
 import { errorHandler } from './utils/errorHandler';
 import { NotFoundError } from './utils/errors';
 import { success } from './utils/jsend';
@@ -36,15 +38,15 @@ app.use(
 app.use(express.json({ limit: '100kb' }));
 
 app.get('/', (_req, res) => {
-  success(res, { message: 'Express API' });
+  success(res, { message: ROOT_MESSAGE });
 });
 
-setupSwagger(app, '/api-docs');
+setupSwagger(app, ApiPaths.DOCS);
 
-app.use('/api/v1', apiRoutes);
+app.use(ApiPaths.BASE, apiRoutes);
 
 app.use((_req, _res, next) => {
-  next(new NotFoundError('Not Found'));
+  next(new NotFoundError(ErrorMessages.NOT_FOUND));
 });
 
 app.use(errorHandler);

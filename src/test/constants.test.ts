@@ -2,12 +2,13 @@
 import fs from 'fs';
 import path from 'path';
 
+import { DB_DATA_DIR, DbFilenames } from '../constants/db';
 import type { DbSchema } from '../types';
 import { NON_EXISTENT_ID, SEED_IDS } from './constants';
 
 describe('test constants', () => {
   it('db.json seed IDs match SEED_IDS constants', () => {
-    const dbPath = path.join(process.cwd(), 'src', 'data', 'db.json');
+    const dbPath = path.join(process.cwd(), DB_DATA_DIR, DbFilenames.DEFAULT);
     const content = fs.readFileSync(dbPath, 'utf-8');
     const db: DbSchema = JSON.parse(content);
 
@@ -24,7 +25,7 @@ describe('test constants', () => {
   });
 
   it('NON_EXISTENT_ID is not in db.json', () => {
-    const dbPath = path.join(process.cwd(), 'src', 'data', 'db.json');
+    const dbPath = path.join(process.cwd(), DB_DATA_DIR, DbFilenames.DEFAULT);
     const content = fs.readFileSync(dbPath, 'utf-8');
     const db: DbSchema = JSON.parse(content);
 

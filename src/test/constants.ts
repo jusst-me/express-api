@@ -1,3 +1,5 @@
+import { ApiPaths } from '../constants/api';
+
 /** Seed data IDs – must match src/data/db.json. New entities get UUIDs via services. */
 export const SEED_IDS = {
   userAlice: '1',
@@ -12,4 +14,4 @@ export const SEED_IDS = {
 export const NON_EXISTENT_ID = '999';
 
 /** API base path for route tests */
-export const API_BASE = '/api/v1';
+export const API_BASE = ApiPaths.BASE;

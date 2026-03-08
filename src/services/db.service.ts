@@ -1,11 +1,12 @@
 import fs from 'fs/promises';
 import path from 'path';
 
+import { DB_DATA_DIR, DbFilenames } from '../constants/db';
 import type { DbSchema } from '../types';
 
 const getDbPath = (): string => {
-  const filename = process.env.NODE_ENV === 'test' ? 'db.test.json' : 'db.json';
-  return path.join(process.cwd(), 'src', 'data', filename);
+  const filename = process.env.NODE_ENV === 'test' ? DbFilenames.TEST : DbFilenames.DEFAULT;
+  return path.join(process.cwd(), DB_DATA_DIR, filename);
 };
 
 export const getDbPathForTests = (): string => getDbPath();
