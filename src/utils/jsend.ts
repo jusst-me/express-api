@@ -1,7 +1,7 @@
 import type { Response } from 'express';
 
-import { HttpStatus } from '../constants/http';
-import { JSendStatus } from '../constants/jsend';
+import { HttpStatus } from '@/constants/http';
+import { JSendStatus } from '@/constants/jsend';
 
 /**
  * JSend response helpers – https://github.com/omniti-labs/jsend

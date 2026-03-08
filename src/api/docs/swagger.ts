@@ -5,7 +5,7 @@ import path from 'path';
 import swaggerUi from 'swagger-ui-express';
 import yaml from 'yaml';
 
-import { config } from '../../config/index';
+import { config } from '@/config/index';
 
 const loadSpec = (): Record<string, unknown> => {
   const filePath = path.join(process.cwd(), 'src', 'api', 'docs', 'openapi.yaml');

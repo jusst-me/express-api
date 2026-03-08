@@ -1,4 +1,4 @@
-import { ApiPaths } from '../constants/api';
+import { ApiPaths } from '@/constants/api';
 
 /** Seed data IDs – must match src/data/db.json. New entities get UUIDs via services. */
 export const SEED_IDS = {

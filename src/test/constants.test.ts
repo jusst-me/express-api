@@ -2,9 +2,9 @@
 import fs from 'fs';
 import path from 'path';
 
-import { DB_DATA_DIR, DbFilenames } from '../constants/db';
-import type { DbSchema } from '../types';
-import { NON_EXISTENT_ID, SEED_IDS } from './constants';
+import { DB_DATA_DIR, DbFilenames } from '@/constants/db';
+import { NON_EXISTENT_ID, SEED_IDS } from '@/test/constants';
+import type { DbSchema } from '@/types';
 
 describe('test constants', () => {
   it('db.json seed IDs match SEED_IDS constants', () => {

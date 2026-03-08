@@ -1,6 +1,6 @@
 import dotenv from 'dotenv';
 
-import { ApiPaths } from '../constants/api';
+import { ApiPaths } from '@/constants/api';
 
 dotenv.config();
 dotenv.config({ path: '.env.local', override: true });

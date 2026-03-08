@@ -1,9 +1,9 @@
 import type { NextFunction, Request, Response } from 'express';
 
-import { ErrorMessages } from '../constants/errors';
-import { HttpStatus } from '../constants/http';
-import { NotFoundError, ValidationError } from './errors';
-import { error as jsendError, fail as jsendFail } from './jsend';
+import { ErrorMessages } from '@/constants/errors';
+import { HttpStatus } from '@/constants/http';
+import { NotFoundError, ValidationError } from '@/utils/errors';
+import { error as jsendError, fail as jsendFail } from '@/utils/jsend';
 
 const isDevelopment = process.env.NODE_ENV !== 'production';
 

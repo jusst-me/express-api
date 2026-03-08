@@ -1,9 +1,9 @@
 import request from 'supertest';
 
-import app from './app';
-import { ApiPaths, ROOT_MESSAGE } from './constants/api';
-import { HttpStatus } from './constants/http';
-import { JSendStatus } from './constants/jsend';
+import app from '@/app';
+import { ApiPaths, ROOT_MESSAGE } from '@/constants/api';
+import { HttpStatus } from '@/constants/http';
+import { JSendStatus } from '@/constants/jsend';
 
 describe('app smoke test', () => {
   it('responds with JSend success on root', async () => {

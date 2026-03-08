@@ -1,6 +1,6 @@
 import { Router } from 'express';
 
-import * as postsController from '../controllers/posts.controller';
+import * as postsController from '@/api/controllers/posts.controller';
 
 const router = Router();
 

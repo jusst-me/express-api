@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-import { ValidationLimits } from '../constants/validation';
+import { ValidationLimits } from '@/constants/validation';
 
 /** Email format validation */
 export const emailSchema = z

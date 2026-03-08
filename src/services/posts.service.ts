@@ -1,8 +1,8 @@
 import crypto from 'crypto';
 
-import type { Post } from '../types';
-import { NotFoundError, ValidationError } from '../utils/errors';
-import { readDb, writeDb } from './db.service';
+import { readDb, writeDb } from '@/services/db.service';
+import type { Post } from '@/types';
+import { NotFoundError, ValidationError } from '@/utils/errors';
 
 export const findAll = async (dbPath?: string): Promise<Post[]> => {
   const db = await readDb(dbPath);

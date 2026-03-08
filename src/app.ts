@@ -3,15 +3,15 @@ import express from 'express';
 import rateLimit from 'express-rate-limit';
 import helmet from 'helmet';
 
-import { setupSwagger } from './api/docs/swagger';
-import apiRoutes from './api/routes/index';
-import { config } from './config/index';
-import { ApiPaths, ROOT_MESSAGE } from './constants/api';
-import { ErrorMessages } from './constants/errors';
-import { errorHandler } from './utils/errorHandler';
-import { NotFoundError } from './utils/errors';
-import { success } from './utils/jsend';
-import { requestIdMiddleware } from './utils/requestId';
+import { setupSwagger } from '@/api/docs/swagger';
+import apiRoutes from '@/api/routes/index';
+import { config } from '@/config/index';
+import { ApiPaths, ROOT_MESSAGE } from '@/constants/api';
+import { ErrorMessages } from '@/constants/errors';
+import { errorHandler } from '@/utils/errorHandler';
+import { NotFoundError } from '@/utils/errors';
+import { success } from '@/utils/jsend';
+import { requestIdMiddleware } from '@/utils/requestId';
 
 const app = express();
 

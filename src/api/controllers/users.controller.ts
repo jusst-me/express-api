@@ -1,12 +1,12 @@
 import type { NextFunction, Request, Response } from 'express';
 
-import { ErrorMessages } from '../../constants/errors';
-import { HttpStatus } from '../../constants/http';
-import { VALIDATION_PATH_BODY } from '../../constants/validation';
-import * as usersService from '../../services/users.service';
-import { ValidationError } from '../../utils/errors';
-import { success } from '../../utils/jsend';
-import { userCreateSchema, userUpdateSchema } from '../../utils/validation';
+import { ErrorMessages } from '@/constants/errors';
+import { HttpStatus } from '@/constants/http';
+import { VALIDATION_PATH_BODY } from '@/constants/validation';
+import * as usersService from '@/services/users.service';
+import { ValidationError } from '@/utils/errors';
+import { success } from '@/utils/jsend';
+import { userCreateSchema, userUpdateSchema } from '@/utils/validation';
 
 export const list = async (_req: Request, res: Response, next: NextFunction): Promise<void> => {
   try {

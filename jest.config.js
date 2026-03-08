@@ -6,4 +6,7 @@ module.exports = {
   testMatch: ['**/*.test.ts'],
   setupFilesAfterEnv: ['<rootDir>/src/test/setup.ts'],
   maxWorkers: 1,
+  moduleNameMapper: {
+    '^@/(.*)$': '<rootDir>/src/$1',
+  },
 };

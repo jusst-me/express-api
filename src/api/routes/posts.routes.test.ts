@@ -1,9 +1,9 @@
 import request from 'supertest';
 
-import app from '../../app';
-import { HttpStatus } from '../../constants/http';
-import { JSendStatus } from '../../constants/jsend';
-import { API_BASE, NON_EXISTENT_ID, SEED_IDS } from '../../test/constants';
+import app from '@/app';
+import { HttpStatus } from '@/constants/http';
+import { JSendStatus } from '@/constants/jsend';
+import { API_BASE, NON_EXISTENT_ID, SEED_IDS } from '@/test/constants';
 
 describe('POSTS /posts', () => {
   describe('GET /posts', () => {

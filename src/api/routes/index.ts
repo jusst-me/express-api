@@ -1,7 +1,7 @@
 import { Router } from 'express';
 
-import postsRoutes from './posts.routes';
-import usersRoutes from './users.routes';
+import postsRoutes from '@/api/routes/posts.routes';
+import usersRoutes from '@/api/routes/users.routes';
 
 const router = Router();
 

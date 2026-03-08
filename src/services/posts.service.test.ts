@@ -3,8 +3,8 @@ import fs from 'fs';
 import os from 'os';
 import path from 'path';
 
-import type { DbSchema } from '../types';
-import * as postsService from './posts.service';
+import * as postsService from '@/services/posts.service';
+import type { DbSchema } from '@/types';
 
 const createTempDb = (): string => {
   const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'posts-service-test-'));

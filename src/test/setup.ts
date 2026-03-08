@@ -2,7 +2,7 @@
 import fs from 'fs';
 import path from 'path';
 
-import { DB_DATA_DIR, DbFilenames } from '../constants/db';
+import { DB_DATA_DIR, DbFilenames } from '@/constants/db';
 
 beforeEach(() => {
   const dbPath = path.join(process.cwd(), DB_DATA_DIR, DbFilenames.DEFAULT);
