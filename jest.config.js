@@ -5,4 +5,5 @@ module.exports = {
   roots: ['<rootDir>/src'],
   testMatch: ['**/*.test.ts'],
   setupFilesAfterEnv: ['<rootDir>/src/test/setup.ts'],
+  maxWorkers: 1,
 };
