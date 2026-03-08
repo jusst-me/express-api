@@ -8,6 +8,7 @@ import apiRoutes from './api/routes/index';
 import { config } from './config/index';
 import { errorHandler } from './utils/errorHandler';
 import { NotFoundError } from './utils/errors';
+import { success } from './utils/jsend';
 import { requestIdMiddleware } from './utils/requestId';
 
 const app = express();
@@ -35,7 +36,7 @@ app.use(
 app.use(express.json({ limit: '100kb' }));
 
 app.get('/', (_req, res) => {
-  res.json({ message: 'Express API' });
+  success(res, { message: 'Express API' });
 });
 
 setupSwagger(app, '/api-docs');

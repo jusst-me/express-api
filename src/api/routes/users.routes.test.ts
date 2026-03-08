@@ -8,11 +8,12 @@ describe('USERS /users', () => {
     it('returns all users', async () => {
       const res = await request(app).get(`${API_BASE}/users`);
       expect(res.status).toBe(200);
-      expect(Array.isArray(res.body)).toBe(true);
-      expect(res.body.length).toBeGreaterThanOrEqual(3);
-      expect(res.body[0]).toHaveProperty('id');
-      expect(res.body[0]).toHaveProperty('name');
-      expect(res.body[0]).toHaveProperty('email');
+      expect(res.body).toMatchObject({ status: 'success' });
+      expect(Array.isArray(res.body.data)).toBe(true);
+      expect(res.body.data.length).toBeGreaterThanOrEqual(3);
+      expect(res.body.data[0]).toHaveProperty('id');
+      expect(res.body.data[0]).toHaveProperty('name');
+      expect(res.body.data[0]).toHaveProperty('email');
     });
   });
 
@@ -21,16 +22,19 @@ describe('USERS /users', () => {
       const res = await request(app).get(`${API_BASE}/users/${SEED_IDS.userAlice}`);
       expect(res.status).toBe(200);
       expect(res.body).toMatchObject({
-        id: SEED_IDS.userAlice,
-        name: 'Alice Johnson',
-        email: 'alice@example.com',
+        status: 'success',
+        data: {
+          id: SEED_IDS.userAlice,
+          name: 'Alice Johnson',
+          email: 'alice@example.com',
+        },
       });
     });
 
     it('returns 404 for non-existent user', async () => {
       const res = await request(app).get(`${API_BASE}/users/${NON_EXISTENT_ID}`);
       expect(res.status).toBe(404);
-      expect(res.body).toHaveProperty('error');
+      expect(res.body).toMatchObject({ status: 'fail', data: { error: expect.any(String) } });
     });
   });
 
@@ -38,8 +42,11 @@ describe('USERS /users', () => {
     it('returns posts for a user', async () => {
       const res = await request(app).get(`${API_BASE}/users/${SEED_IDS.userAlice}/posts`);
       expect(res.status).toBe(200);
-      expect(Array.isArray(res.body)).toBe(true);
-      expect(res.body.every((p: { userId: string }) => p.userId === SEED_IDS.userAlice)).toBe(true);
+      expect(res.body).toMatchObject({ status: 'success' });
+      expect(Array.isArray(res.body.data)).toBe(true);
+      expect(res.body.data.every((p: { userId: string }) => p.userId === SEED_IDS.userAlice)).toBe(
+        true
+      );
     });
 
     it('returns 404 for non-existent user', async () => {
@@ -56,16 +63,19 @@ describe('USERS /users', () => {
       });
       expect(res.status).toBe(201);
       expect(res.body).toMatchObject({
-        name: 'Test User',
-        email: 'test@example.com',
+        status: 'success',
+        data: {
+          name: 'Test User',
+          email: 'test@example.com',
+        },
       });
-      expect(res.body).toHaveProperty('id');
+      expect(res.body.data).toHaveProperty('id');
     });
 
     it('returns 400 for invalid body', async () => {
       const res = await request(app).post(`${API_BASE}/users`).send({ name: 'Only name' });
       expect(res.status).toBe(400);
-      expect(res.body).toHaveProperty('error');
+      expect(res.body).toMatchObject({ status: 'fail', data: { error: expect.any(String) } });
     });
 
     it('returns 400 for invalid email format', async () => {
@@ -74,8 +84,8 @@ describe('USERS /users', () => {
         email: 'not-an-email',
       });
       expect(res.status).toBe(400);
-      expect(res.body).toHaveProperty('error');
-      expect(res.body.error).toContain('Invalid email');
+      expect(res.body.status).toBe('fail');
+      expect(res.body.data.error).toContain('Invalid email');
     });
   });
 
@@ -87,7 +97,7 @@ describe('USERS /users', () => {
         email: 'carol.updated@example.com',
       });
       expect(res.status).toBe(200);
-      expect(res.body.name).toBe('Carol Updated');
+      expect(res.body).toMatchObject({ status: 'success', data: { name: 'Carol Updated' } });
     });
 
     it('returns 404 for non-existent user', async () => {
@@ -106,10 +116,11 @@ describe('USERS /users', () => {
         name: 'To Delete',
         email: 'delete@example.com',
       });
-      const id = createRes.body.id;
+      const id = createRes.body.data.id;
 
       const deleteRes = await request(app).delete(`${API_BASE}/users/${id}`);
-      expect(deleteRes.status).toBe(204);
+      expect(deleteRes.status).toBe(200);
+      expect(deleteRes.body).toMatchObject({ status: 'success', data: null });
 
       const getRes = await request(app).get(`${API_BASE}/users/${id}`);
       expect(getRes.status).toBe(404);
@@ -118,7 +129,7 @@ describe('USERS /users', () => {
     it('returns 400 when user has posts', async () => {
       const res = await request(app).delete(`${API_BASE}/users/${SEED_IDS.userAlice}`);
       expect(res.status).toBe(400);
-      expect(res.body).toHaveProperty('error');
+      expect(res.body).toMatchObject({ status: 'fail', data: { error: expect.any(String) } });
     });
 
     it('returns 404 for non-existent user', async () => {

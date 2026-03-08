@@ -48,7 +48,19 @@ This creates `~/.config/husky/init.sh` so your Node/pnpm path is available in Gi
 | `pnpm format`     | Format code with Prettier                        |
 | `pnpm lint`       | Run ESLint + Prettier                            |
 
-## API documentation
+## API
+
+### Response format (JSend)
+
+All API responses follow the [JSend](https://github.com/omniti-labs/jsend) format:
+
+- **Success** – `{ status: 'success', data: <payload> }` (payload can be an object, array, or `null`)
+- **Fail** – `{ status: 'fail', data: { error: string, ... } }` (client error, e.g. validation)
+- **Error** – `{ status: 'error', message: string, code?: number, data?: object }` (server error)
+
+Clients should check `status` and read the payload from `data` (or `message` for errors).
+
+### API documentation
 
 Interactive API documentation is available at `http://localhost:<PORT>/api-docs` when the server is running (default port 3000, overridable via `PORT` in `.env`). The OpenAPI spec is defined in `src/api/docs/openapi.yaml`.
 

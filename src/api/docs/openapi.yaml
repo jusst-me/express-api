@@ -1,7 +1,12 @@
 openapi: 3.0.3
 info:
   title: Express API
-  description: REST API for posts and users
+  description: |
+    REST API for posts and users. All responses use the JSend format
+    (https://github.com/omniti-labs/jsend) for consistency.
+    - success: `{ status: "success", data: ... }`
+    - fail: `{ status: "fail", data: { error, details? } }` (4xx)
+    - error: `{ status: "error", message, code?, data? }` (5xx)
   version: 1.0.0
 servers:
   - url: http://localhost:3000/api/v1
@@ -13,13 +18,11 @@ paths:
       tags: [Posts]
       responses:
         '200':
-          description: Array of posts
+          description: Array of posts (JSend success)
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Post'
+                $ref: '#/components/schemas/JSendSuccessPostArray'
     post:
       summary: Create a new post
       tags: [Posts]
@@ -31,13 +34,17 @@ paths:
               $ref: '#/components/schemas/PostCreate'
       responses:
         '201':
-          description: Created post
+          description: Created post (JSend success)
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Post'
+                $ref: '#/components/schemas/JSendSuccessPost'
         '400':
-          description: Validation error
+          description: Validation error (JSend fail)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JSendFail'
   /posts/{id}:
     get:
       summary: Get a post by ID
@@ -50,13 +57,17 @@ paths:
             type: string
       responses:
         '200':
-          description: The post
+          description: The post (JSend success)
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Post'
+                $ref: '#/components/schemas/JSendSuccessPost'
         '404':
-          description: Post not found
+          description: Post not found (JSend fail)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JSendFail'
     put:
       summary: Update a post
       tags: [Posts]
@@ -74,15 +85,23 @@ paths:
               $ref: '#/components/schemas/PostUpdate'
       responses:
         '200':
-          description: Updated post
+          description: Updated post (JSend success)
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Post'
+                $ref: '#/components/schemas/JSendSuccessPost'
         '400':
-          description: Validation error
+          description: Validation error (JSend fail)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JSendFail'
         '404':
-          description: Post not found
+          description: Post not found (JSend fail)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JSendFail'
     delete:
       summary: Delete a post
       tags: [Posts]
@@ -93,23 +112,29 @@ paths:
           schema:
             type: string
       responses:
-        '204':
-          description: Post deleted
+        '200':
+          description: Post deleted (JSend success, data null)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JSendSuccessNull'
         '404':
-          description: Post not found
+          description: Post not found (JSend fail)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JSendFail'
   /users:
     get:
       summary: List all users
       tags: [Users]
       responses:
         '200':
-          description: Array of users
+          description: Array of users (JSend success)
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/User'
+                $ref: '#/components/schemas/JSendSuccessUserArray'
     post:
       summary: Create a new user
       tags: [Users]
@@ -121,13 +146,17 @@ paths:
               $ref: '#/components/schemas/UserCreate'
       responses:
         '201':
-          description: Created user
+          description: Created user (JSend success)
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/User'
+                $ref: '#/components/schemas/JSendSuccessUser'
         '400':
-          description: Validation error
+          description: Validation error (JSend fail)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JSendFail'
   /users/{id}:
     get:
       summary: Get a user by ID
@@ -140,13 +169,17 @@ paths:
             type: string
       responses:
         '200':
-          description: The user
+          description: The user (JSend success)
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/User'
+                $ref: '#/components/schemas/JSendSuccessUser'
         '404':
-          description: User not found
+          description: User not found (JSend fail)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JSendFail'
     put:
       summary: Update a user
       tags: [Users]
@@ -164,15 +197,23 @@ paths:
               $ref: '#/components/schemas/User'
       responses:
         '200':
-          description: Updated user
+          description: Updated user (JSend success)
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/User'
+                $ref: '#/components/schemas/JSendSuccessUser'
         '400':
-          description: Validation error
+          description: Validation error (JSend fail)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JSendFail'
         '404':
-          description: User not found
+          description: User not found (JSend fail)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JSendFail'
     delete:
       summary: Delete a user
       tags: [Users]
@@ -183,12 +224,24 @@ paths:
           schema:
             type: string
       responses:
-        '204':
-          description: User deleted
+        '200':
+          description: User deleted (JSend success, data null)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JSendSuccessNull'
         '400':
-          description: Cannot delete user with existing posts
+          description: Cannot delete user with existing posts (JSend fail)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JSendFail'
         '404':
-          description: User not found
+          description: User not found (JSend fail)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JSendFail'
   /users/{id}/posts:
     get:
       summary: Get posts by user ID
@@ -201,17 +254,82 @@ paths:
             type: string
       responses:
         '200':
-          description: Array of posts by the user
+          description: Array of posts by the user (JSend success)
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Post'
+                $ref: '#/components/schemas/JSendSuccessPostArray'
         '404':
-          description: User not found
+          description: User not found (JSend fail)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JSendFail'
 components:
   schemas:
+    JSendSuccessPostArray:
+      type: object
+      required: [status, data]
+      properties:
+        status:
+          type: string
+          enum: [success]
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Post'
+    JSendSuccessUserArray:
+      type: object
+      required: [status, data]
+      properties:
+        status:
+          type: string
+          enum: [success]
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/User'
+    JSendSuccessPost:
+      type: object
+      required: [status, data]
+      properties:
+        status:
+          type: string
+          enum: [success]
+        data:
+          $ref: '#/components/schemas/Post'
+    JSendSuccessUser:
+      type: object
+      required: [status, data]
+      properties:
+        status:
+          type: string
+          enum: [success]
+        data:
+          $ref: '#/components/schemas/User'
+    JSendSuccessNull:
+      type: object
+      required: [status, data]
+      properties:
+        status:
+          type: string
+          enum: [success]
+        data:
+          type: 'null'
+    JSendFail:
+      type: object
+      required: [status, data]
+      properties:
+        status:
+          type: string
+          enum: [fail]
+        data:
+          type: object
+          properties:
+            error:
+              type: string
+            details:
+              type: array
     Post:
       type: object
       required: [id, title, body, userId, createdAt]

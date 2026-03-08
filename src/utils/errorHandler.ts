@@ -1,6 +1,7 @@
 import type { NextFunction, Request, Response } from 'express';
 
 import { NotFoundError, ValidationError } from './errors';
+import { error as jsendError, fail as jsendFail } from './jsend';
 
 const isDevelopment = process.env.NODE_ENV !== 'production';
 
@@ -24,27 +25,18 @@ export const errorHandler = (
   _next: NextFunction
 ): void => {
   if (err instanceof NotFoundError) {
-    res.status(404).json({ error: err.message });
+    jsendFail(res, { error: err.message }, 404);
     return;
   }
 
   if (err instanceof ValidationError) {
-    res
-      .status(400)
-      .json(
-        err.details !== undefined
-          ? { error: err.message, details: err.details }
-          : { error: err.message }
-      );
+    const data: Record<string, unknown> = { error: err.message };
+    if (err.details !== undefined) data.details = err.details;
+    jsendFail(res, data, 400);
     return;
   }
 
   logError(req, err);
-  const body: { error: string; requestId?: string } = {
-    error: 'Internal server error',
-  };
-  if (req.requestId) {
-    body.requestId = req.requestId;
-  }
-  res.status(500).json(body);
+  const data = req.requestId ? { requestId: req.requestId } : undefined;
+  jsendError(res, 'Internal server error', { code: 500, data });
 };

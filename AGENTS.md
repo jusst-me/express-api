@@ -14,6 +14,16 @@ Context for AI coding agents working on this project.
 
 ## Code conventions
 
+### API responses (JSend)
+
+All API responses use the [JSend](https://github.com/omniti-labs/jsend) format. Use the helpers in `src/utils/jsend.ts`:
+
+- `success(res, data, statusCode?)` – success responses
+- `fail(res, data, statusCode?)` – client errors (validation, not found, etc.)
+- `error(res, message, options?)` – server errors (500)
+
+The error handler (`src/utils/errorHandler.ts`) already maps exceptions to JSend `fail`/`error` responses.
+
 ### Documentation and comments
 
 All documentation and code comments must be written in English.

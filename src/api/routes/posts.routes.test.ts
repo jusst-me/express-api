@@ -8,13 +8,14 @@ describe('POSTS /posts', () => {
     it('returns all posts', async () => {
       const res = await request(app).get(`${API_BASE}/posts`);
       expect(res.status).toBe(200);
-      expect(Array.isArray(res.body)).toBe(true);
-      expect(res.body.length).toBeGreaterThanOrEqual(3);
-      expect(res.body[0]).toHaveProperty('id');
-      expect(res.body[0]).toHaveProperty('title');
-      expect(res.body[0]).toHaveProperty('body');
-      expect(res.body[0]).toHaveProperty('userId');
-      expect(res.body[0]).toHaveProperty('createdAt');
+      expect(res.body).toMatchObject({ status: 'success' });
+      expect(Array.isArray(res.body.data)).toBe(true);
+      expect(res.body.data.length).toBeGreaterThanOrEqual(3);
+      expect(res.body.data[0]).toHaveProperty('id');
+      expect(res.body.data[0]).toHaveProperty('title');
+      expect(res.body.data[0]).toHaveProperty('body');
+      expect(res.body.data[0]).toHaveProperty('userId');
+      expect(res.body.data[0]).toHaveProperty('createdAt');
     });
   });
 
@@ -23,16 +24,19 @@ describe('POSTS /posts', () => {
       const res = await request(app).get(`${API_BASE}/posts/${SEED_IDS.post1}`);
       expect(res.status).toBe(200);
       expect(res.body).toMatchObject({
-        id: SEED_IDS.post1,
-        title: 'Getting Started with Web Development',
-        userId: SEED_IDS.userAlice,
+        status: 'success',
+        data: {
+          id: SEED_IDS.post1,
+          title: 'Getting Started with Web Development',
+          userId: SEED_IDS.userAlice,
+        },
       });
     });
 
     it('returns 404 for non-existent post', async () => {
       const res = await request(app).get(`${API_BASE}/posts/${NON_EXISTENT_ID}`);
       expect(res.status).toBe(404);
-      expect(res.body).toHaveProperty('error');
+      expect(res.body).toMatchObject({ status: 'fail', data: { error: expect.any(String) } });
     });
   });
 
@@ -45,18 +49,21 @@ describe('POSTS /posts', () => {
       });
       expect(res.status).toBe(201);
       expect(res.body).toMatchObject({
-        title: 'Test Post',
-        body: 'Test body content',
-        userId: SEED_IDS.userAlice,
+        status: 'success',
+        data: {
+          title: 'Test Post',
+          body: 'Test body content',
+          userId: SEED_IDS.userAlice,
+        },
       });
-      expect(res.body).toHaveProperty('id');
-      expect(res.body).toHaveProperty('createdAt');
+      expect(res.body.data).toHaveProperty('id');
+      expect(res.body.data).toHaveProperty('createdAt');
     });
 
     it('returns 400 for invalid body', async () => {
       const res = await request(app).post(`${API_BASE}/posts`).send({ title: 'Only title' });
       expect(res.status).toBe(400);
-      expect(res.body).toHaveProperty('error');
+      expect(res.body).toMatchObject({ status: 'fail', data: { error: expect.any(String) } });
     });
 
     it('returns 400 for non-existent userId', async () => {
@@ -78,7 +85,7 @@ describe('POSTS /posts', () => {
         userId: SEED_IDS.userAlice,
       });
       expect(res.status).toBe(200);
-      expect(res.body.title).toBe('Updated Title');
+      expect(res.body).toMatchObject({ status: 'success', data: { title: 'Updated Title' } });
     });
 
     it('returns 404 for non-existent post', async () => {
@@ -99,10 +106,11 @@ describe('POSTS /posts', () => {
         body: 'Body',
         userId: SEED_IDS.userAlice,
       });
-      const id = createRes.body.id;
+      const id = createRes.body.data.id;
 
       const deleteRes = await request(app).delete(`${API_BASE}/posts/${id}`);
-      expect(deleteRes.status).toBe(204);
+      expect(deleteRes.status).toBe(200);
+      expect(deleteRes.body).toMatchObject({ status: 'success', data: null });
 
       const getRes = await request(app).get(`${API_BASE}/posts/${id}`);
       expect(getRes.status).toBe(404);
