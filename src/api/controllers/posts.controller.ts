@@ -1,88 +1,72 @@
 import type { NextFunction, Request, Response } from 'express';
 
 import * as postsService from '../../services/posts.service';
-import type { Post } from '../../types';
 import { ValidationError } from '../../utils/errors';
+import { postCreateSchema, postUpdateSchema } from '../../utils/validation';
 
-const validatePostBody = (body: unknown): body is Omit<Post, 'id' | 'createdAt'> => {
-  if (!body || typeof body !== 'object') return false;
-  const b = body as Record<string, unknown>;
-  return (
-    typeof b.title === 'string' &&
-    b.title.length > 0 &&
-    typeof b.body === 'string' &&
-    typeof b.userId === 'string' &&
-    b.userId.length > 0
-  );
-};
-
-const validateFullPost = (body: unknown): body is Post => {
-  if (!body || typeof body !== 'object') return false;
-  const b = body as Record<string, unknown>;
-  return (
-    typeof b.id === 'string' &&
-    typeof b.title === 'string' &&
-    b.title.length > 0 &&
-    typeof b.body === 'string' &&
-    typeof b.userId === 'string' &&
-    b.userId.length > 0 &&
-    typeof b.createdAt === 'string'
-  );
-};
-
-export const list = (_req: Request, res: Response, next: NextFunction): void => {
+export const list = async (_req: Request, res: Response, next: NextFunction): Promise<void> => {
   try {
-    const posts = postsService.findAll();
+    const posts = await postsService.findAll();
     res.json(posts);
   } catch (err) {
     next(err);
   }
 };
 
-export const getById = (req: Request, res: Response, next: NextFunction): void => {
+export const getById = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   try {
     const id = req.params.id as string;
-    const post = postsService.findById(id);
+    const post = await postsService.findById(id);
     res.json(post);
   } catch (err) {
     next(err);
   }
 };
 
-export const create = (req: Request, res: Response, next: NextFunction): void => {
+export const create = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   try {
-    if (!validatePostBody(req.body)) {
-      throw new ValidationError('Invalid post: title, body, and userId are required');
+    const result = postCreateSchema.safeParse(req.body);
+    if (!result.success) {
+      const msg = result.error.errors.map((e) => e.message).join('; ');
+      const details = result.error.errors.map((e) => ({
+        path: e.path.join('.') || 'body',
+        message: e.message,
+      }));
+      throw new ValidationError(`Invalid post: ${msg}`, details);
     }
-    const post = postsService.create(req.body);
+    const post = await postsService.create(result.data);
     res.status(201).json(post);
   } catch (err) {
     next(err);
   }
 };
 
-export const update = (req: Request, res: Response, next: NextFunction): void => {
+export const update = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   try {
-    if (!validateFullPost(req.body)) {
-      throw new ValidationError(
-        'Invalid post: id, title, body, userId, and createdAt are required'
-      );
+    const result = postUpdateSchema.safeParse(req.body);
+    if (!result.success) {
+      const msg = result.error.errors.map((e) => e.message).join('; ');
+      const details = result.error.errors.map((e) => ({
+        path: e.path.join('.') || 'body',
+        message: e.message,
+      }));
+      throw new ValidationError(`Invalid post: ${msg}`, details);
     }
     const id = req.params.id as string;
-    if (req.body.id !== id) {
+    if (result.data.id !== id) {
       throw new ValidationError('Post id in body must match URL parameter');
     }
-    const post = postsService.update(id, req.body);
+    const post = await postsService.update(id, result.data);
     res.json(post);
   } catch (err) {
     next(err);
   }
 };
 
-export const remove = (req: Request, res: Response, next: NextFunction): void => {
+export const remove = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   try {
     const id = req.params.id as string;
-    postsService.remove(id);
+    await postsService.remove(id);
     res.status(204).send();
   } catch (err) {
     next(err);

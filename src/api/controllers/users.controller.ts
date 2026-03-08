@@ -1,93 +1,82 @@
 import type { NextFunction, Request, Response } from 'express';
 
 import * as usersService from '../../services/users.service';
-import type { User } from '../../types';
 import { ValidationError } from '../../utils/errors';
+import { userCreateSchema, userUpdateSchema } from '../../utils/validation';
 
-const validateUserBody = (body: unknown): body is Omit<User, 'id'> => {
-  if (!body || typeof body !== 'object') return false;
-  const b = body as Record<string, unknown>;
-  return (
-    typeof b.name === 'string' &&
-    b.name.length > 0 &&
-    typeof b.email === 'string' &&
-    b.email.length > 0
-  );
-};
-
-const validateFullUser = (body: unknown): body is User => {
-  if (!body || typeof body !== 'object') return false;
-  const b = body as Record<string, unknown>;
-  return (
-    typeof b.id === 'string' &&
-    typeof b.name === 'string' &&
-    b.name.length > 0 &&
-    typeof b.email === 'string' &&
-    b.email.length > 0
-  );
-};
-
-export const list = (_req: Request, res: Response, next: NextFunction): void => {
+export const list = async (_req: Request, res: Response, next: NextFunction): Promise<void> => {
   try {
-    const users = usersService.findAll();
+    const users = await usersService.findAll();
     res.json(users);
   } catch (err) {
     next(err);
   }
 };
 
-export const getById = (req: Request, res: Response, next: NextFunction): void => {
+export const getById = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   try {
     const id = req.params.id as string;
-    const user = usersService.findById(id);
+    const user = await usersService.findById(id);
     res.json(user);
   } catch (err) {
     next(err);
   }
 };
 
-export const getPosts = (req: Request, res: Response, next: NextFunction): void => {
+export const getPosts = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   try {
     const id = req.params.id as string;
-    const posts = usersService.findPostsByUserId(id);
+    const posts = await usersService.findPostsByUserId(id);
     res.json(posts);
   } catch (err) {
     next(err);
   }
 };
 
-export const create = (req: Request, res: Response, next: NextFunction): void => {
+export const create = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   try {
-    if (!validateUserBody(req.body)) {
-      throw new ValidationError('Invalid user: name and email are required');
+    const result = userCreateSchema.safeParse(req.body);
+    if (!result.success) {
+      const msg = result.error.errors.map((e) => e.message).join('; ');
+      const details = result.error.errors.map((e) => ({
+        path: e.path.join('.') || 'body',
+        message: e.message,
+      }));
+      throw new ValidationError(`Invalid user: ${msg}`, details);
     }
-    const user = usersService.create(req.body);
+    const user = await usersService.create(result.data);
     res.status(201).json(user);
   } catch (err) {
     next(err);
   }
 };
 
-export const update = (req: Request, res: Response, next: NextFunction): void => {
+export const update = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   try {
-    if (!validateFullUser(req.body)) {
-      throw new ValidationError('Invalid user: id, name, and email are required');
+    const result = userUpdateSchema.safeParse(req.body);
+    if (!result.success) {
+      const msg = result.error.errors.map((e) => e.message).join('; ');
+      const details = result.error.errors.map((e) => ({
+        path: e.path.join('.') || 'body',
+        message: e.message,
+      }));
+      throw new ValidationError(`Invalid user: ${msg}`, details);
     }
     const id = req.params.id as string;
-    if (req.body.id !== id) {
+    if (result.data.id !== id) {
       throw new ValidationError('User id in body must match URL parameter');
     }
-    const user = usersService.update(id, req.body);
+    const user = await usersService.update(id, result.data);
     res.json(user);
   } catch (err) {
     next(err);
   }
 };
 
-export const remove = (req: Request, res: Response, next: NextFunction): void => {
+export const remove = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   try {
     const id = req.params.id as string;
-    usersService.remove(id);
+    await usersService.remove(id);
     res.status(204).send();
   } catch (err) {
     next(err);
