@@ -2,9 +2,24 @@ import type { NextFunction, Request, Response } from 'express';
 
 import { NotFoundError, ValidationError } from './errors';
 
+const isDevelopment = process.env.NODE_ENV !== 'production';
+
+const logError = (req: Request, err: Error): void => {
+  const payload: Record<string, unknown> = {
+    level: 'error',
+    requestId: req.requestId,
+    message: err.message,
+    name: err.name,
+  };
+  if (isDevelopment && err.stack) {
+    payload.stack = err.stack;
+  }
+  console.error(JSON.stringify(payload));
+};
+
 export const errorHandler = (
   err: Error,
-  _req: Request,
+  req: Request,
   res: Response,
   _next: NextFunction
 ): void => {
@@ -24,6 +39,12 @@ export const errorHandler = (
     return;
   }
 
-  console.error(err);
-  res.status(500).json({ error: 'Internal server error' });
+  logError(req, err);
+  const body: { error: string; requestId?: string } = {
+    error: 'Internal server error',
+  };
+  if (req.requestId) {
+    body.requestId = req.requestId;
+  }
+  res.status(500).json(body);
 };
