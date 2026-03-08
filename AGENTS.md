@@ -28,6 +28,15 @@ All documentation and code comments must be written in English.
 - Keep source code in `src/`
 - Entry point: `src/index.ts`
 
+### ESLint rule overrides
+
+When a rule must be disabled for a specific file, add an `eslint-disable` comment at the top of that file rather than in `eslint.config.mjs`. This keeps the exception local and documents why it applies.
+
+```ts
+/* eslint-disable n/no-sync */
+import fs from 'fs';
+```
+
 ## Commands
 
 | Command         | Description                                |
