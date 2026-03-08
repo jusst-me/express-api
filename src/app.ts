@@ -15,6 +15,9 @@ import { requestIdMiddleware } from './utils/requestId';
 
 const app = express();
 
+// Trust proxy when behind Railway, Render, etc. – required for correct rate limiting
+app.set('trust proxy', 1);
+
 app.use(requestIdMiddleware);
 app.use(
   helmet({
