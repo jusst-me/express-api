@@ -32,50 +32,55 @@ describe('users.service', () => {
   });
 
   describe('findAll', () => {
-    it('returns all users', () => {
-      const users = usersService.findAll(dbPath);
+    it('returns all users', async () => {
+      const users = await usersService.findAll(dbPath);
       expect(users).toHaveLength(2);
     });
   });
 
   describe('findById', () => {
-    it('returns user by id', () => {
-      const user = usersService.findById('1', dbPath);
+    it('returns user by id', async () => {
+      const user = await usersService.findById('1', dbPath);
       expect(user.name).toBe('User 1');
     });
 
-    it('throws NotFoundError for non-existent id', () => {
-      expect(() => usersService.findById('999', dbPath)).toThrow('User with id 999 not found');
+    it('throws NotFoundError for non-existent id', async () => {
+      await expect(usersService.findById('999', dbPath)).rejects.toThrow(
+        'User with id 999 not found'
+      );
     });
   });
 
   describe('findPostsByUserId', () => {
-    it('returns posts for user', () => {
-      const posts = usersService.findPostsByUserId('1', dbPath);
+    it('returns posts for user', async () => {
+      const posts = await usersService.findPostsByUserId('1', dbPath);
       expect(posts).toHaveLength(1);
       expect(posts[0].userId).toBe('1');
     });
 
-    it('throws NotFoundError for non-existent user', () => {
-      expect(() => usersService.findPostsByUserId('999', dbPath)).toThrow(
+    it('throws NotFoundError for non-existent user', async () => {
+      await expect(usersService.findPostsByUserId('999', dbPath)).rejects.toThrow(
         'User with id 999 not found'
       );
     });
   });
 
   describe('create', () => {
-    it('creates a new user', () => {
-      const user = usersService.create({ name: 'New User', email: 'new@example.com' }, dbPath);
+    it('creates a new user', async () => {
+      const user = await usersService.create(
+        { name: 'New User', email: 'new@example.com' },
+        dbPath
+      );
       expect(user.name).toBe('New User');
       expect(user).toHaveProperty('id');
-      const all = usersService.findAll(dbPath);
+      const all = await usersService.findAll(dbPath);
       expect(all).toHaveLength(3);
     });
   });
 
   describe('update', () => {
-    it('updates a user', () => {
-      const updated = usersService.update(
+    it('updates a user', async () => {
+      const updated = await usersService.update(
         '1',
         { id: '1', name: 'Updated', email: 'updated@example.com' },
         dbPath
@@ -85,13 +90,13 @@ describe('users.service', () => {
   });
 
   describe('remove', () => {
-    it('removes a user without posts', () => {
-      usersService.remove('2', dbPath);
-      expect(() => usersService.findById('2', dbPath)).toThrow();
+    it('removes a user without posts', async () => {
+      await usersService.remove('2', dbPath);
+      await expect(usersService.findById('2', dbPath)).rejects.toThrow();
     });
 
-    it('throws ValidationError when user has posts', () => {
-      expect(() => usersService.remove('1', dbPath)).toThrow(
+    it('throws ValidationError when user has posts', async () => {
+      await expect(usersService.remove('1', dbPath)).rejects.toThrow(
         'Cannot delete user with existing posts'
       );
     });

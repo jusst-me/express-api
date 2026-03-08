@@ -1,5 +1,4 @@
-/* eslint-disable n/no-sync */
-import fs from 'fs';
+import fs from 'fs/promises';
 import path from 'path';
 
 import type { DbSchema } from '../types';
@@ -11,13 +10,13 @@ const getDbPath = (): string => {
 
 export const getDbPathForTests = (): string => getDbPath();
 
-export const readDb = (dbPath?: string): DbSchema => {
+export const readDb = async (dbPath?: string): Promise<DbSchema> => {
   const filePath = dbPath ?? getDbPath();
-  const content = fs.readFileSync(filePath, 'utf-8');
+  const content = await fs.readFile(filePath, 'utf-8');
   return JSON.parse(content) as DbSchema;
 };
 
-export const writeDb = (data: DbSchema, dbPath?: string): void => {
+export const writeDb = async (data: DbSchema, dbPath?: string): Promise<void> => {
   const filePath = dbPath ?? getDbPath();
-  fs.writeFileSync(filePath, JSON.stringify(data, null, 2), 'utf-8');
+  await fs.writeFile(filePath, JSON.stringify(data, null, 2), 'utf-8');
 };

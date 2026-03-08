@@ -37,60 +37,61 @@ describe('posts.service', () => {
   });
 
   describe('findAll', () => {
-    it('returns all posts', () => {
-      const posts = postsService.findAll(dbPath);
+    it('returns all posts', async () => {
+      const posts = await postsService.findAll(dbPath);
       expect(posts).toHaveLength(1);
       expect(posts[0].title).toBe('Post 1');
     });
   });
 
   describe('findById', () => {
-    it('returns post by id', () => {
-      const post = postsService.findById('1', dbPath);
+    it('returns post by id', async () => {
+      const post = await postsService.findById('1', dbPath);
       expect(post.id).toBe('1');
       expect(post.title).toBe('Post 1');
     });
 
-    it('throws NotFoundError for non-existent id', () => {
-      expect(() => postsService.findById('999', dbPath)).toThrow('Post with id 999 not found');
+    it('throws NotFoundError for non-existent id', async () => {
+      await expect(postsService.findById('999', dbPath)).rejects.toThrow(
+        'Post with id 999 not found'
+      );
     });
   });
 
   describe('create', () => {
-    it('creates a new post', () => {
-      const post = postsService.create({ title: 'New', body: 'Body', userId: '1' }, dbPath);
+    it('creates a new post', async () => {
+      const post = await postsService.create({ title: 'New', body: 'Body', userId: '1' }, dbPath);
       expect(post.title).toBe('New');
       expect(post).toHaveProperty('id');
       expect(post).toHaveProperty('createdAt');
-      const all = postsService.findAll(dbPath);
+      const all = await postsService.findAll(dbPath);
       expect(all).toHaveLength(2);
     });
 
-    it('throws ValidationError for non-existent userId', () => {
-      expect(() =>
+    it('throws ValidationError for non-existent userId', async () => {
+      await expect(
         postsService.create({ title: 'New', body: 'Body', userId: '999' }, dbPath)
-      ).toThrow('User with id 999 not found');
+      ).rejects.toThrow('User with id 999 not found');
     });
   });
 
   describe('update', () => {
-    it('updates a post', () => {
-      const updated = postsService.update(
+    it('updates a post', async () => {
+      const updated = await postsService.update(
         '1',
         {
           id: '1',
           title: 'Updated',
           body: 'New body',
           userId: '1',
-          createdAt: '2025-01-01T00:00:00Z',
         },
         dbPath
       );
       expect(updated.title).toBe('Updated');
     });
 
-    it('throws NotFoundError for non-existent id', () => {
-      expect(() =>
+    it('throws NotFoundError for non-existent id', async () => {
+      await expect(
         postsService.update(
           '999',
           {
@@ -98,22 +99,23 @@ describe('posts.service', () => {
             title: 'T',
             body: 'B',
             userId: '1',
-            createdAt: new Date().toISOString(),
           },
           dbPath
         )
-      ).toThrow('Post with id 999 not found');
+      ).rejects.toThrow('Post with id 999 not found');
     });
   });
 
   describe('remove', () => {
-    it('removes a post', () => {
-      postsService.remove('1', dbPath);
-      expect(() => postsService.findById('1', dbPath)).toThrow();
+    it('removes a post', async () => {
+      await postsService.remove('1', dbPath);
+      await expect(postsService.findById('1', dbPath)).rejects.toThrow();
     });
 
-    it('throws NotFoundError for non-existent id', () => {
-      expect(() => postsService.remove('999', dbPath)).toThrow('Post with id 999 not found');
+    it('throws NotFoundError for non-existent id', async () => {
+      await expect(postsService.remove('999', dbPath)).rejects.toThrow(
+        'Post with id 999 not found'
+      );
     });
   });
 });
